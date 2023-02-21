@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>禁煙アプリ</title>
+    </head>
+
+    <body>
+        <h1>🚭マイ禁煙カレンダー</h1>
+
+        <p>今日の禁煙格言「<span id="quote" style="color: red;">吸いたいと思ったら深呼吸</span>」</p>
+
+        <table border="1">
+            <tr>
+                <th>⏰開始日</th>
+                <td id="start_date"></td>
+            </tr>
+            <tr>
+                <th>📅継続日数</th>
+                <td id="days"></td>
+            </tr>
+            <tr>
+                <th>🚬禁煙本数</th>
+                <td id="number"></td>
+            </tr>
+            <tr>
+                <th>💰節約金額</th>
+                <td id="money"></td>
+            </tr>
+            <tr>
+                <th>💗寿命</th>
+                <td id="lifespan"></td>
+            </tr>
+        </table>
+
+        <!--日数テーブル生成位置-->
+        <div id='days_table'></div>
+
+        <script>
+            // 禁煙格言
+            const QUOTE = [
+                "吸いたいと思ったら深呼吸",
+                "がんばれ！！！",
+                "ガムを食べろ",
+                "禁断症状は体が健康になる証",
+                "1本吸ったら10日の別居",
+                "ぜんそくになるかもよ",
+                "百害あって一利なし",
+
+            ]
+
+            document.getElementById("quote").innerText = QUOTE[Math.floor(Math.random() * QUOTE.length)];
+
+            // 禁煙開始日
+            const start_time = new Date("2023/2/1");
+            const start_year = start_time.getFullYear();
+            const start_month = start_time.getMonth() + 1;
+            const start_date = start_time.getDate();
+
+            let str = `${start_year}年${start_month}月${start_date}日`;
+            document.getElementById("start_date").innerText = str;
+
+            // 経過日数
+            const today = new Date(Date.now()); // 今日の日付を取得する
+            const from = new Date(start_time);
+            const to = new Date(today);
+            const ms = to.getTime() - from.getTime(); // 経過時間をミリ秒で取得
+
+            const days = Math.floor(ms / (1000 * 60 * 60 * 24)); // ミリ秒を日付に変換(端数切捨て)
+            document.getElementById("days").innerText = days + "日";
+
+            // 禁煙本数の計算
+            const number_per_day = 12; // 1日あたりの喫煙本数
+
+            const number = number_per_day * days;
+            document.getElementById("number").innerText = number + "本";
+
+            // 節約金額
+            const price_per_box = 420; // 1箱あたりの値段
+            const number_per_box = 14 // 1箱あたりの本数
+            const price_per_piece = price_per_box / number_per_box // 1本あたりの値段
+
+            const money = price_per_piece * number_per_day * days; // 1日あたりの節約金額
+            document.getElementById("money").innerText = money + "円";
+
+            // 寿命（1本あたり5分30秒縮む）
+            const minutes_per_piece = 5.5; // 1本あたりの縮む分数
+            let lifespan = minutes_per_piece * number;
+            lifespan = lifespan / 60;
+            document.getElementById("lifespan").innerText = lifespan + "時間";
+
+
+
+            // 日数テーブルの生成
+            let count = 0; // テーブル用の日数カウント
+            var table = document.createElement('table'); // table要素を生成
+            table.border = "1";
+            // tr部分のループ
+            for (var i = 0; i < 52; i++) {
+                // tr要素を生成
+                var tr = document.createElement('tr');
+                // td部分のループ
+                for (var j = 0; j < 7; j++) {
+                    // td要素を生成
+                    if (j === 0) {
+                        var th = document.createElement('th');
+                        th.textContent = i + 1 + "週目";
+                        tr.appendChild(th);
+                    }
+
+                    var td = document.createElement('td');
+                    // td要素内にテキストを追加
+                    td.textContent = count + 1;
+                    // 経過日数まで色を塗る
+                    if (count < days) {
+                        th.style.background = "pink";
+                        td.style.textDecoration = "line-through";
+                        td.style.background = "pink";
+                    }
+                    // td要素をtr要素の子要素に追加
+                    tr.appendChild(td);
+                    count += 1;
+                }
+                // tr要素をtable要素の子要素に追加
+                table.appendChild(tr);
+            }
+            // 生成したtable要素を追加する
+            document.getElementById('days_table').appendChild(table);
+        </script>
+    </body>
+
+</html>
